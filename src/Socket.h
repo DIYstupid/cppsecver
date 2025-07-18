@@ -5,17 +5,16 @@ class Socket
 {
 private:
     int fd;
+
 public:
     Socket();
     Socket(int);
     ~Socket();
 
-    void bind(InetAddress*);
+    void bind(InetAddress *);
     void listen();
     void setnonblocking();
 
-    int accept(InetAddress*);
-    void connection(InetAddress*);
+    int accept(InetAddress *);
     int getFd();
 };
-
