@@ -1,19 +1,19 @@
 #include "EventLoop.h"
-#include "Channel.h"
 #include "Epoll.h"
+#include "Channel.h"
 #include <vector>
 
-EventLoop ::EventLoop() : ep(nullptr), quit(false)
+EventLoop::EventLoop() : ep(nullptr), quit(false)
 {
     ep = new Epoll();
 }
 
-EventLoop ::~EventLoop()
+EventLoop::~EventLoop()
 {
     delete ep;
 }
 
-void EventLoop ::loop()
+void EventLoop::loop()
 {
     while (!quit)
     {

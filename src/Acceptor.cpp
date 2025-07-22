@@ -1,6 +1,5 @@
 #include "Acceptor.h"
 #include "Socket.h"
-#include "InetAddress.h"
 #include "Channel.h"
 #include "Server.h"
 #include <iostream>
@@ -10,14 +9,15 @@ Acceptor::Acceptor(EventLoop *_loop) : loop(_loop), sock(nullptr), acceptChannel
     sock = new Socket();
     InetAddress *addr = new InetAddress("127.0.0.1", 1234);
     sock->bind(addr);
+    // sock->setnonblocking(); acceptor使用阻塞式IO比较好
     sock->listen();
-    sock->setnonblocking();
     acceptChannel = new Channel(loop, sock->getFd());
     std::function<void()> cb = std::bind(&Acceptor::acceptConnection, this);
-    acceptChannel->setCallback(cb);
-    acceptChannel->enableReading();
+    acceptChannel->setReadCallback(cb);
+    acceptChannel->enableRead();
     delete addr;
 }
+
 Acceptor::~Acceptor()
 {
     delete sock;
@@ -28,8 +28,8 @@ void Acceptor::acceptConnection()
 {
     InetAddress *clnt_addr = new InetAddress();
     Socket *clnt_sock = new Socket(sock->accept(clnt_addr));
-    printf("new client fd %d! IP: %s Port: %d\n", clnt_sock->getFd(), inet_ntoa(clnt_addr->getAddr().sin_addr), ntohs(clnt_addr->getAddr().sin_port));
-    clnt_sock->setnonblocking();
+    printf("new client fd %d! IP: %s Port: %d\n", clnt_sock->getFd(), clnt_addr->getIp(), clnt_addr->getPort());
+    clnt_sock->setnonblocking(); // 新接受到的连接设置为非阻塞式
     newConnectionCallback(clnt_sock);
     delete clnt_addr;
 }

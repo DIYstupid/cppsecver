@@ -11,6 +11,8 @@ file(GLOB SRC_FILES src/*.cpp)
 
 add_executable(server server.cpp ${SRC_FILES})
 add_executable(client client.cpp ${SRC_FILES})
+add_executable(ThreadPooltest ThreadPooltest.cpp ${SRC_FILES})
+add_executable(test test.cpp ${SRC_FILES})
 # 链接 pthread 库（如有需要）
 find_package(Threads REQUIRED)
 target_link_libraries(server PRIVATE Threads::Threads)
